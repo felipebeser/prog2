@@ -11,7 +11,6 @@ public class Peer{
 	Socket conexao;
 	ObjectInputStream entrada;
 	ObjectOutputStream saida;
-	String enviada = "";
 	String recebida = "";
 	Scanner sc = new Scanner(System.in);
 	int port = 10000;
@@ -30,11 +29,9 @@ public class Peer{
 		
 	}
 	
-	public void enviar(){
+	public void enviar(String s){
 		try {
-			this.saida.flush();
-			this.enviada = sc.nextLine();
-			this.saida.writeObject(this.enviada);
+			this.saida.writeObject(s);
 			this.saida.flush();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

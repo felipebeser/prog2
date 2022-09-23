@@ -24,8 +24,31 @@ public class Client extends Peer{
 	public static void main(String[] args){
 		Client client = new Client();
 		
+		JFrame frame = new JFrame("Chat");
+		frame.setSize(400, 200);
+
+		JTextArea caixaTexto = new JTextArea();
+		JTextField mensagem = new JTextField();
+		
+		mensagem.addActionListener(
+		         new ActionListener() {
+		            public void actionPerformed( ActionEvent e ){
+		            	client.enviar(e.getActionCommand());
+		            }
+		         }
+		      );
+		
+		frame.add(mensagem,BorderLayout.PAGE_END);
+		frame.add(caixaTexto,BorderLayout.CENTER);
+		
+		frame.setVisible(true);
+		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		
 		try {
 			client.connectToServer(client.port);
+			client.entrada = new ObjectInputStream(client.conexao.getInputStream());
+    		client.saida = new ObjectOutputStream(client.conexao.getOutputStream());
+ 
 			
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
@@ -34,33 +57,9 @@ public class Client extends Peer{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		JFrame frame = new JFrame("Chat");
-		frame.setSize(400, 200);
+		
+		
 
-		JTextArea caixaTexto = new JTextArea();
-		JTextField mensagem = new JTextField();
-		
-		frame.add(mensagem,BorderLayout.PAGE_END);
-		frame.add(caixaTexto,BorderLayout.CENTER);
-		
-		frame.setVisible(true);
-		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		
-		mensagem.addActionListener(
-		         new ActionListener() {
-		            public void actionPerformed( ActionEvent e ){
-		            	try {
-			    			client.entrada = new ObjectInputStream(client.conexao.getInputStream());
-		            		client.saida = new ObjectOutputStream(client.conexao.getOutputStream());
-						} catch (IOException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-		    			
-		               client.enviar();
-		            }
-		         }
-		      );
 		
 		
 	}
