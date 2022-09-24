@@ -33,7 +33,8 @@ public class Client extends Peer{
 		mensagem.addActionListener(
 		         new ActionListener() {
 		            public void actionPerformed( ActionEvent e ){
-		            	client.enviar(e.getActionCommand());
+		            	String message = mensagem.getText();
+		            	client.enviar(message);
 		            }
 		         }
 		      );
