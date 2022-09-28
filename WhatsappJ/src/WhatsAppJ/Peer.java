@@ -1,29 +1,29 @@
 package WhatsAppJ;
 
 import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-
-import javax.swing.JButton;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.Scanner;
-import java.awt.event.ActionEvent;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JTextField;
+import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 
 @SuppressWarnings("serial")
 public class Peer extends JFrame {
+	Host host;
+	Connect connect;
 	ServerSocket server;
 	Socket client;
 	String name = "";
@@ -32,13 +32,13 @@ public class Peer extends JFrame {
 	String ip = "127.0.0.1";
 	ObjectInputStream input;
 	ObjectOutputStream output;
-	private JPanel contentPane;
-	private JTextField textName;
-	private JTextField messageField;
-	private JTextArea textArea;
-	private JButton btnHost;
-	private JButton btnConnect;
-	private JLabel labelName;
+	protected JPanel contentPane;
+	protected JTextField textName;
+	protected JTextField messageField;
+	protected JTextArea textArea;
+	protected JButton btnHost;
+	protected JButton btnConnect;
+	protected JLabel labelName;
 
 
 	/**
@@ -46,23 +46,23 @@ public class Peer extends JFrame {
 	 * @throws IOException 
 	 * @throws ClassNotFoundException 
 	 */
-	  public static void main( String args[] ) throws ClassNotFoundException, IOException{
-	      Peer app = new Peer();
-	      System.out.println("teste");
-	      app.addWindowListener(
-	         new WindowAdapter() {
-	            public void windowClosing( WindowEvent e ){
-	               System.exit( 0 );
-	            }
-	         }
-	      );
-
-	      app.runApp();
-	   }
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Peer frame = new Peer();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
 
 	/**
 	 * Create the frame.
 	 */
+	
 	public Peer() {
 		setTitle("WhatsAppJ");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -76,7 +76,7 @@ public class Peer extends JFrame {
 		labelName = new JLabel("Name"); // label name
 		labelName.setBounds(68, 103, 46, 14);
 		contentPane.add(labelName);
-		
+	
 		textName = new JTextField(); 			//text name
 		textName.setBounds(140, 100, 128, 20);
 		contentPane.add(textName);
@@ -84,9 +84,10 @@ public class Peer extends JFrame {
 		
 		textArea = new JTextArea();
 		textArea.setVisible(false);
-		textArea.setFocusable(rootPaneCheckingEnabled);
+		textArea.setFocusable(false);
 //		textArea.append("textArea");
 		textArea.setBounds(0, 0, 434, 192);
+		textArea.setFont(new Font("Helvetica Neue", Font.PLAIN, 20));
 		contentPane.add(textArea);
 		
 		messageField = new JTextField();
@@ -103,140 +104,114 @@ public class Peer extends JFrame {
 		btnConnect.setBounds(214, 203, 128, 23);
 		contentPane.add(btnConnect);
 		
-		btnHost.addActionListener(new ActionListener() {          //host
+		
+		btnHost.addActionListener(new ActionListener() {          //start host
 			public void actionPerformed(ActionEvent e) {
-				host(port);
+				name = textName.getText();
+				textName.setVisible(false);
+				labelName.setVisible(false);
+				btnHost.setVisible(false);
+				btnConnect.setVisible(false);
+				textArea.setVisible(true);
+				messageField.setVisible(true);
+				setTitle("WhatsAppJ Host");
+				tHost.start();
 			}
 		});
 		
-		btnConnect.addActionListener(new ActionListener() {
+		btnConnect.addActionListener(new ActionListener() { 	//start client
 			public void actionPerformed(ActionEvent e) {
-				connect(ip, port);
+				name = textName.getText();
+				textName.setVisible(false);
+				labelName.setVisible(false);
+				btnHost.setVisible(false);
+				btnConnect.setVisible(false);
+				textArea.setVisible(true);
+				messageField.setVisible(true);
+				messageField.setEnabled(false);
+				setTitle("WhatsAppJ Client");
+				tConnect.start();
 			}
 		});
 		
 		
-		messageField.addActionListener(new ActionListener() {
+		messageField.addActionListener(new ActionListener() {  //send message
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				sendData(e.getActionCommand());
+				messageField.setText("");
 			}
 		});	
 	}
-	
-	public ServerSocket host(int port){
-		try {
-			this.server = new ServerSocket(port);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return this.server;
-	}
-	
-	public Socket accept() {
-		try {
-			this.client = this.server.accept();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return this.client;
-	}
-	
-	public Socket connect (String ip, int port) {
-		try {
-			this.client = new Socket(ip,port);
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return this.client;
-	}
-	
 
-	
-	public void runApp() throws IOException, ClassNotFoundException {
-			textArea.setVisible(true);
-			messageField.setVisible(true);
-			textName.setVisible(false);
-			btnHost.setVisible(false);
-			btnConnect.setVisible(false);
-			labelName.setVisible(false);
-			messageField.requestFocus();
-//			peer.setServer(peer.host(port));
-			server = new ServerSocket(port);
-			textArea.append("Aguardando conexï¿½o na porta " + server.getInetAddress() + "\n");
-			client = server.accept();
-			textArea.append( "Conexï¿½o estabelecida de: " + client.getInetAddress().getHostName() + "\n");
-//				
-			input = new ObjectInputStream(client.getInputStream());
-			output = new ObjectOutputStream(client.getOutputStream());
-			output.flush();
-				
-				
-				while(message!="sair") {
-					message = (String) input.readObject();
-					textArea.append(message + "\n");
+	 Thread tHost = new Thread() {
+		 public void run() {
+			 try {
+					server = new ServerSocket (port);
+					textArea.append("Aguardando conexão..");
+					client = server.accept();
+					output = new ObjectOutputStream(client.getOutputStream());
+					input = new ObjectInputStream(client.getInputStream());
+					textArea.append("Conectado!");
+					messageField.setEnabled(true);
+					
+					while(message != "sair") {
+						try {
+							message = (String) input.readObject();
+							textArea.append(message);
+						} catch (ClassNotFoundException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-			
-			
-			
-			String recebida = null;
+		 }
+	 };
+	 
+	 Thread tConnect = new Thread() {
+		 public void run() {
+			 try {
+					client = new Socket (ip, port);
+					output = new ObjectOutputStream(client.getOutputStream());
+					input = new ObjectInputStream(client.getInputStream());
+					textArea.append("Conectado!");
+					messageField.setEnabled(true);
+					
+					while(message != "sair") {
+						try {
+							message = (String) input.readObject();
+							textArea.append(message);
+						} catch (ClassNotFoundException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		 }
+	 };
 
-			Scanner sc = null;
-			try {
-				sc = new Scanner(client.getInputStream());
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			
-//			ObjectInputStream ois = new ObjectInputStream(peer.getClient().getInputStream());
-			while(sc.hasNextLine()) {
-				textArea.append(sc.nextLine());
-			}
-			sc.close();
-//			recebida = (String) ois.readObject();
-//			
-			
-			
-//			try {
-//				peer.setClient(peer.getServer().accept());
-//			} catch (IOException e1) {
-//				// TODO Auto-generated catch block
-//				e1.printStackTrace();
-//			}
-			
-			try {
-				client = connect(ip, port);
-				textArea.setVisible(true);
-				messageField.setVisible(true);
-				textName.setVisible(false);
-				btnHost.setVisible(false);
-				btnConnect.setVisible(false);
-				labelName.setVisible(false);
-				textArea.append("Conectado \n");
-				messageField.requestFocus();
-				input = new ObjectInputStream(client.getInputStream());
-				output = new ObjectOutputStream(client.getOutputStream());
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-	}
-	
-	   private void sendData( String s ){
-		      try {
-		         message = s;
-		         output.writeObject( "CLIENT>>> " + s );
-		         output.flush();
-		         textArea.append( "\nCLIENT>>>" + s );
-		      }catch ( IOException cnfex ) {
-		         textArea.append("\nError writing object" );
-		      }
-		   }
+	  private void sendData( String s ){
+	      try {
+	    	 SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");  
+	    	 Date date = new Date();   
+	         message = s;
+	         output.writeObject( "\n(" + formatter.format(date) + ") " + name + ": " + s );
+	         output.flush();
+	         textArea.append( "\n" + formatter.format(date) + name + ": " + s );
+	      }catch ( IOException cnfex ) {
+	         textArea.append("\nError writing object" );
+	      }
+	   }
 }
