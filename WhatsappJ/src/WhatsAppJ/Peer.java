@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Date;
@@ -15,6 +17,7 @@ import java.text.SimpleDateFormat;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -22,8 +25,6 @@ import javax.swing.border.EmptyBorder;
 
 @SuppressWarnings("serial")
 public class Peer extends JFrame {
-	Host host;
-	Connect connect;
 	ServerSocket server;
 	Socket client;
 	String name = "";
@@ -88,6 +89,8 @@ public class Peer extends JFrame {
 //		textArea.append("textArea");
 		textArea.setBounds(0, 0, 434, 192);
 		textArea.setFont(new Font("Helvetica Neue", Font.PLAIN, 20));
+		textArea.setWrapStyleWord(true);
+		textArea.setLineWrap(true);
 		contentPane.add(textArea);
 		
 		messageField = new JTextField();
@@ -148,11 +151,11 @@ public class Peer extends JFrame {
 		 public void run() {
 			 try {
 					server = new ServerSocket (port);
-					textArea.append("Aguardando conexão..");
+					textArea.append("Aguardando conexão em " + Inet4Address.getLocalHost());
 					client = server.accept();
 					output = new ObjectOutputStream(client.getOutputStream());
 					input = new ObjectInputStream(client.getInputStream());
-					textArea.append("Conectado!");
+					textArea.append("\nConectado em " + client.getInetAddress());
 					messageField.setEnabled(true);
 					
 					while(message != "sair") {
@@ -177,6 +180,7 @@ public class Peer extends JFrame {
 	 Thread tConnect = new Thread() {
 		 public void run() {
 			 try {
+				 	ip = JOptionPane.showInputDialog("Digite o ip:");
 					client = new Socket (ip, port);
 					output = new ObjectOutputStream(client.getOutputStream());
 					input = new ObjectInputStream(client.getInputStream());
