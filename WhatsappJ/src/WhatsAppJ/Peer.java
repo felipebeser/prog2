@@ -30,7 +30,7 @@ public class Peer extends JFrame {
 	String name = "";
 	String message = "";
 	int port = 10000;
-	String ip = "127.0.0.1";
+	String ip = "10.136.35.89";
 	ObjectInputStream input;
 	ObjectOutputStream output;
 	protected JPanel contentPane;
@@ -150,8 +150,8 @@ public class Peer extends JFrame {
 	 Thread tHost = new Thread() {
 		 public void run() {
 			 try {
-					server = new ServerSocket (port);
-					textArea.append("Aguardando conex„o em " + Inet4Address.getLocalHost());
+					server = new ServerSocket(port);
+					textArea.append("Aguardando conex√£o em " + Inet4Address.getLocalHost());
 					client = server.accept();
 					output = new ObjectOutputStream(client.getOutputStream());
 					input = new ObjectInputStream(client.getInputStream());
@@ -180,7 +180,7 @@ public class Peer extends JFrame {
 	 Thread tConnect = new Thread() {
 		 public void run() {
 			 try {
-				 	ip = JOptionPane.showInputDialog("Digite o ip:");
+//				 	ip = JOptionPane.showInputDialog("Digite o ip:");
 					client = new Socket (ip, port);
 					output = new ObjectOutputStream(client.getOutputStream());
 					input = new ObjectInputStream(client.getInputStream());
