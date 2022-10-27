@@ -3,6 +3,7 @@ package banco;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Scanner;
 
 public class JdbcInsere {
 
@@ -12,9 +13,14 @@ public class JdbcInsere {
 			String sql_insert = "INSERT INTO contatos (nome, email, endereco) VALUES (?, ?, ?)";
 			Connection con = ConnectionFactory.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql_insert);
-			stmt.setString(1, "Gabriel");
-			stmt.setString(2, "gabriel@gabriel.com");
-			stmt.setString(3, "Av. Brasil, 10000");
+			Scanner sc = new Scanner(System.in);
+			System.out.println("--------- INSERIR CONTATO ---------");
+			System.out.println("Digite o nome do contato: ");
+			stmt.setString(1, sc.nextLine());
+			System.out.println("Digite o email do contato: ");			
+			stmt.setString(2, sc.nextLine());
+			System.out.println("Digite o endereço do contato: ");
+			stmt.setString(3, sc.nextLine());
 			stmt.execute();
 			System.out.println("Gravação efetuada com sucesso!");
 			stmt.close();
