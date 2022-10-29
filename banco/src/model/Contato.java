@@ -30,4 +30,8 @@ public class Contato {
 	public void setEndereco(String endereco) {
 		this.endereco = endereco;
 	}
+	
+	public String toString() {
+		return "id: " + this.id + " | " + "Nome: " + this.nome + " | " + "Email: " + this.email + " | " + "Endereço: " + this.endereco;
+	}
 }
