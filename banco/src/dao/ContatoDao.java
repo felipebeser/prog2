@@ -22,9 +22,11 @@ public class ContatoDao {
 	public void adiciona(Contato contato) throws SQLException {
 		String sql_insert = "INSERT INTO contatos (nome, email, endereco) VALUES (?, ?, ?)";
 		PreparedStatement stmt = con.prepareStatement(sql_insert);
+		System.out.println(stmt);
 		stmt.setString(1, contato.getNome());
 		stmt.setString(2, contato.getEmail());
 		stmt.setString(3, contato.getEndereco());
+		System.out.println(stmt);
 		stmt.execute();
 		System.out.println("Gravação efetuada com sucesso!");
 		stmt.close();
@@ -89,36 +91,29 @@ public class ContatoDao {
 		System.out.println("Contato deletado.");
 	}
 	
-	// item H: atualizar nome e/ou email e/ou endereco
-	public void atualiza(Contato contato, List<List<String>> params) throws SQLException {
-		int count = 0;
-		String set_params = "";
-		System.out.println("Atualizando o contato: ");
-		System.out.println("Nome: " + contato.getNome());
-		System.out.println("Email: " + contato.getEmail());
-		System.out.println("Endereco: " + contato.getEndereco());
-		String sql_update = "UPDATE contatos SET ? = ? WHERE id = ?";
-		PreparedStatement ps = con.prepareStatement(sql_update);
-		for(List<String> list: params) {
-			if(count > 0) {
-				set_params += ", ";
+	// item H: editar nome e/ou email e/ou endereco
+	public void edita(Contato contato, List<ArrayList<String>> params) throws SQLException {
+		if(params.size()>0) {
+			int count = 0;
+			String sql_update_begin = "UPDATE contatos SET ";
+			String sql_update_end = " WHERE id = " + contato.getId();
+	
+			for(List<String> list: params) {
+				if(count > 0) {
+					sql_update_begin += " , ";
+				}
+				sql_update_begin += list.get(0) + " = " + "?";
+				count++;
 			}
-			set_params += param;
-			count++;
+			String sql_update = sql_update_begin + sql_update_end;
+			PreparedStatement ps = con.prepareStatement(sql_update);
+			int index = 1;
+			for (List<String> list: params) {
+				ps.setString(index, list.get(1));
+				index++;
+			}
+			ps.execute();
+			ps.close();
 		}
-//		System.out.println("Qual campo gostaria de editar?");
-//		String ans = sc.nextLine();
-//		ps.setString(1, ans);
-//		System.out.println("Qual valor?");
-//		ans = sc.nextLine();
-//		ps.setString(2, ans);
-//		System.out.println("Qual id do contato?");
-//		ans = sc.nextLine();
-//		ps.setString(3, ans);
-
-		ps.executeUpdate(sql_update);
-		
 	}
-	
-	
 }

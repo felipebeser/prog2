@@ -1,6 +1,7 @@
 package banco;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -11,7 +12,7 @@ public class App {
 	Scanner sc = new Scanner(System.in);
 	String res;
 	int id;
-	int menu = 0;
+	int menuMode = 0;
 	Contato contato;
 	List<Contato> contatos;
 	ContatoDao cdao;
@@ -24,7 +25,7 @@ public class App {
 		try {
 			App app = new App();
 			app.opcao();
-		} catch (SQLException e) {
+		} catch (SQLException | InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -46,13 +47,15 @@ public class App {
 		}
 	}
 	
-	public void opcao() throws SQLException {
+	public void opcao() throws SQLException, InterruptedException {
 		
 		do {
-			if(menu == 1){
+			if(menuMode == 1){
 				showMenu();
 			}
+			System.out.print(">");
 			res = sc.nextLine();
+			System.out.println("");
 			switch(res) {
 				case "1": case "listar": 
 					contatos = cdao.getLista();
@@ -71,20 +74,49 @@ public class App {
 					break;
 				case "3": case "buscar":
 					System.out.println("--- Busca contato por letra inicial ---");
-					System.out.println("Digite a letra:");
+					System.out.println("Digite a letra: ");
 					char letra = sc.nextLine().charAt(0);
-					cdao.getListaPorLetra(letra);
+					contatos = cdao.getListaPorLetra(letra);
+					printContato(contatos);
 					break;
 				case "4": case "buscarId":
 					System.out.println("--- Busca contato pelo id ---");
 					System.out.println("Digite o id:");
 					id = sc.nextInt();
 					sc.nextLine();
-					cdao.getContatoPorId(id);	
+					contato = cdao.getContatoPorId(id);	
+					printContato(contato);
 					break;
-				case "5": case "atualizar":
-					System.out.println("--- Atualizar contato ---");
-		//			cdao.atualiza(newContato);
+				case "5": case "editar":
+					System.out.println("--- Editar contato ---");
+					System.out.println("Digite o id do contato que gostaria de editar: ");
+					id = Integer.parseInt(sc.nextLine());
+					contato = cdao.getContatoPorId(id);
+					System.out.println("Editando o contato: ");
+					System.out.println(contato.toString());
+					String[] campos = {"nome", "email", "endereco"};
+					String ans;
+					List<ArrayList<String>> parameters = new ArrayList<ArrayList<String>>();
+					for(String campo: campos) {		
+						System.out.println("Deseja editar o campo "+ campo + "? (s/n)");
+						res = sc.nextLine();
+						while(!(res.equals("s") || res.equals("n"))) {
+							System.out.println("Digite s ou n.");
+							res=sc.nextLine();
+						}
+						if(res.equals("s")) {
+							ArrayList<String> param = new ArrayList<String>();
+							System.out.println("Digite o novo valor do " + campo);
+							ans = sc.nextLine();
+							param.add(campo);
+							param.add(ans);
+							parameters.add(param);
+						}	
+						if(res.equals("n")) {
+							continue;
+						}
+					}
+					cdao.edita(contato, parameters);
 					
 					break;
 					
@@ -94,8 +126,8 @@ public class App {
 					id = sc.nextInt();
 					sc.nextLine();
 					System.out.println("Deseja realmente deletar este contato? (s/n)");
-					char ans = sc.nextLine().charAt(0);
-					if(ans == 's') {
+					ans = sc.nextLine();
+					if(ans.equals("s")) {
 						cdao.deleta(id);
 					}
 					else {
@@ -109,14 +141,14 @@ public class App {
 					break;
 				
 				case "menu":
-					menu = 1;
+					menuMode = 1;
 					break;
 				case "help":
 					System.out.println("Comandos:");
 					System.out.println("listar - lista todos os contatos");
 					System.out.println("buscar - busca contatos");
 					System.out.println("buscarId - busca contato pelo id");
-					System.out.println("atualizar - atualizar um contato");
+					System.out.println("editar - atualizar um contato");
 					System.out.println("deletar - deletar contato pelo id");
 					System.out.println("sair - finaliza a aplicação");
 					break;
