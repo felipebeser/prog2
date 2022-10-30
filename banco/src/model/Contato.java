@@ -32,6 +32,6 @@ public class Contato {
 	}
 	
 	public String toString() {
-		return "id: " + this.id + " | " + "Nome: " + this.nome + " | " + "Email: " + this.email + " | " + "EndereÃ§o: " + this.endereco;
+		return "id: " + this.id + " | " + "Nome: " + this.nome + " | " + "Email: " + this.email + " | " + "Endereço: " + this.endereco;
 	}
 }

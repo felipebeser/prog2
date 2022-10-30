@@ -1,9 +1,6 @@
 package dao;
 
 import java.sql.SQLException;
-import java.util.List;
-
-import model.Contato;
 
 public class JdbcTesteBuscaPorId {
 	public static void main(String[] args) {

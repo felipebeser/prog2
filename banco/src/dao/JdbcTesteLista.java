@@ -9,7 +9,7 @@ public class JdbcTesteLista {
 	public static void main(String[] args) {
 		try {
 			ContatoDao cdao = new ContatoDao();
-			List<Contato> contatos = cdao.getLista();
+			List<Contato> contatos = cdao.getAll();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -22,7 +22,8 @@ public class JdbcInsere {
 			System.out.println("Digite o endere√ßo do contato: ");
 			stmt.setString(3, sc.nextLine());
 			stmt.execute();
-			System.out.println("Grava√ß√£o efetuada com sucesso!");
+			System.out.println("GravaÁ„o efetuada com sucesso!");
+			sc.close();
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {

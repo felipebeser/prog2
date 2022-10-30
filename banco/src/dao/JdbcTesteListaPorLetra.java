@@ -8,9 +8,9 @@ import model.Contato;
 public class JdbcTesteListaPorLetra {
 	public static void main(String[] args) {
 		try {
-			char letra = 'f';
+			String letra = "f";
 			ContatoDao cdao = new ContatoDao();
-			List<Contato> contatos = cdao.getListaPorLetra(letra);
+			List<Contato> contatos = cdao.getAllByString(letra);
 			
 			for(Contato contato: contatos) {
 				System.out.println("Nome: " + contato.getNome());
