@@ -129,4 +129,8 @@ public class ContatoDao implements DAO<Contato>{
 		boolean verified = (contato.getId()!=null ? true : false);
 		return verified;
 	}
+	
+	public void closeConnection() throws SQLException {
+		this.con.close();
+	}
 }

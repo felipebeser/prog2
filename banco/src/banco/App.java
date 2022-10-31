@@ -27,6 +27,7 @@ public class App {
 		try {
 			App app = new App();
 			app.opcao();
+			app.cdao.closeConnection();
 		} catch (SQLException | InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -45,12 +46,14 @@ public class App {
 			System.out.println("");
 			
 			switch(res) {
-				case "1": case "listar": 
+				case "1": 
+				case "listar": 
 					contatos = cdao.getAll();
 					printContato(contatos);
 					break;
 					
-				case "2": case "adicionar":
+				case "2": 
+				case "adicionar":
 					System.out.println("--- Adicionar contato ---");
 					Contato newContato = new Contato();
 					System.out.println("Digite o nome do contato: ");
@@ -63,7 +66,8 @@ public class App {
 					System.out.println("Gravação efetuada com sucesso!");
 					break;
 					
-				case "3": case "buscar":
+				case "3": 
+				case "buscar":
 					System.out.println("--- Buscar contato ---");
 					System.out.println("Digite uma letra ou string: ");
 					String searchFor = sc.nextLine();
@@ -75,7 +79,8 @@ public class App {
 					}
 					break;
 					
-				case "4": case "buscarId":
+				case "4": 
+				case "buscarId":
 					System.out.println("--- Buscar contato por id ---");
 					System.out.println("Digite o id:");
 					id = sc.nextInt();
@@ -88,7 +93,8 @@ public class App {
 					}
 					break;
 					
-				case "5": case "editar":
+				case "5": 
+				case "editar":
 					System.out.println("--- Editar contato ---");
 					System.out.println("Digite o id do contato que gostaria de editar: ");
 					id = Integer.parseInt(sc.nextLine());
@@ -123,18 +129,20 @@ public class App {
 					}
 					break;
 					
-				case "6": case "deletar":
+				case "6": 
+				case "deletar":
 					System.out.println("--- Deletar contato ---");
 					System.out.println("Digite o id do contato: ");
 					try {
 						id = sc.nextInt();
-						contato = cdao.get(id);
 					} catch (InputMismatchException e){
 						System.out.println("É necessário um número inteiro correspondente ao id.\nVoltando ao menu..");
 						break;
 					}
 					sc.nextLine();
+					contato = cdao.get(id);
 					if(cdao.verify(contato)) {
+						System.out.println(contato.toString());
 						System.out.println("Deseja realmente deletar este contato? (s/n)");
 						ans = sc.nextLine();
 						if(ans.equals("s")) {
@@ -150,7 +158,8 @@ public class App {
 					}
 					break;
 					
-				case "s": case "sair":
+				case "s": 
+				case "sair":
 					System.out.println("App finalizado.");
 					break;
 					
@@ -171,7 +180,7 @@ public class App {
 		} while(!(res.equals("s") || res.equals("sair")));
 	}
 	public void showMenu() {
-		System.out.println("1 - Listar contatos");
+		System.out.println("\n1 - Listar contatos");
 		System.out.println("2 - Adicionar contato");
 		System.out.println("3 - Buscar contatos pela primeira letra");
 		System.out.println("4 - Buscar contato pelo id");
@@ -181,7 +190,7 @@ public class App {
 	}
 	
 	public void showHelp() {
-		System.out.println("lista de comandos:");
+		System.out.println("\nlista de comandos:");
 		System.out.println("listar - lista todos os contatos");
 		System.out.println("adicionar - adiciona um novo contato");
 		System.out.println("buscar - busca contatos");
@@ -192,7 +201,7 @@ public class App {
 	}
 	
 	public App() throws SQLException {
-		cdao = new ContatoDao();
+		this.cdao = new ContatoDao();
 	}
 	
 	public void printContato(Contato contato) throws InterruptedException {
